@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum UploadType {
+  PDF
+  DOCX
+  TXT
+}
+
+enum NotificationChannel {
+  EMAIL
+  PUSH
+  IN_APP
+}
+
+model User {
+  id               String           @id @default(cuid())
+  email            String           @unique
+  passwordHash     String?
+  emailVerifiedAt  DateTime?
+  image            String?
+  provider         String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  profile          Profile?
+  subscriptions    Subscription[]
+  subjects         Subject[]
+  studyPlans       StudyPlan[]
+  studySessions    StudySession[]
+  exams            Exam[]
+  uploads          Upload[]
+  flashcards       Flashcard[]
+  quizzes          Quiz[]
+  achievements     Achievement[]
+  notifications    Notification[]
+  analyticsEvents  AnalyticsEvent[]
+}
+
+model Profile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  fullName           String
+  ageRange           String?
+  wakeTime           String?
+  sleepTime          String?
+  goal               String?
+  weeklyAvailability Json?
+  preferences        Json?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  userId             String
+  stripeCustomerId   String?            @unique
+  stripeSubscription String?            @unique
+  plan               String
+  billingCycle       String
+  status             SubscriptionStatus @default(TRIAL)
+  currentPeriodEnd   DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subject {
+  id           String        @id @default(cuid())
+  userId       String
+  name         String
+  level        String?
+  difficulty   Int           @default(3)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studyPlans   StudyPlan[]
+}
+
+model StudyPlan {
+  id             String         @id @default(cuid())
+  userId         String
+  subjectId      String?
+  title          String
+  summary        String?
+  goal           String?
+  status         String         @default("draft")
+  weeklyPlanJson Json
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject        Subject?       @relation(fields: [subjectId], references: [id])
+  sessions       StudySession[]
+}
+
+model StudySession {
+  id            String   @id @default(cuid())
+  userId        String
+  studyPlanId   String?
+  subject       String
+  topic         String?
+  startsAt      DateTime
+  endsAt        DateTime
+  status        String   @default("scheduled")
+  xpEarned      Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studyPlan     StudyPlan? @relation(fields: [studyPlanId], references: [id])
+}
+
+model Exam {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  examDate    DateTime
+  priority    String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Upload {
+  id             String     @id @default(cuid())
+  userId         String
+  fileName       String
+  fileUrl        String
+  mimeType       String
+  uploadType     UploadType
+  extractedJson  Json?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Flashcard {
+  id             String   @id @default(cuid())
+  userId         String
+  front          String
+  back           String
+  deck           String?
+  easeFactor     Float    @default(2.5)
+  intervalDays   Int      @default(1)
+  dueDate        DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id             String   @id @default(cuid())
+  userId         String
+  title          String
+  subject        String
+  payload        Json
+  score          Float?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Achievement {
+  id             String   @id @default(cuid())
+  userId         String
+  name           String
+  description    String
+  unlockedAt     DateTime?
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id             String               @id @default(cuid())
+  userId         String
+  title          String
+  body           String
+  channel        NotificationChannel
+  readAt         DateTime?
+  createdAt      DateTime             @default(now())
+  user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AnalyticsEvent {
+  id             String   @id @default(cuid())
+  userId         String
+  name           String
+  payload        Json?
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

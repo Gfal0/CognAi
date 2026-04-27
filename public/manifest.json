@@ -1,0 +1,17 @@
+{
+  "name": "CognAi",
+  "short_name": "CognAi",
+  "description": "Plataforma de estudo inteligente com IA",
+  "theme_color": "#07111F",
+  "background_color": "#07111F",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/logo-icon.svg",
+      "sizes": "128x128",
+      "type": "image/svg+xml"
+    }
+  ]
+}
+
