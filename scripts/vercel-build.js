@@ -1,4 +1,9 @@
 const { execSync } = require("node:child_process");
+const path = require("node:path");
+
+const nodeExec = process.execPath;
+const prismaCli = path.join(process.cwd(), "node_modules", "prisma", "build", "index.js");
+const nextCli = path.join(process.cwd(), "node_modules", "next", "dist", "bin", "next");
 
 function run(command) {
   execSync(command, {
@@ -8,15 +13,15 @@ function run(command) {
 }
 
 try {
-  run("npx prisma generate");
+  run(`"${nodeExec}" "${prismaCli}" generate`);
 
   if (process.env.DATABASE_URL) {
-    run("npx prisma migrate deploy");
+    run(`"${nodeExec}" "${prismaCli}" db push`);
   } else {
-    console.warn("Skipping prisma migrate deploy because DATABASE_URL is not set.");
+    console.warn("Skipping prisma db push because DATABASE_URL is not set.");
   }
 
-  run("npx next build");
+  run(`"${nodeExec}" "${nextCli}" build`);
 } catch (error) {
   process.exit(error.status || 1);
 }

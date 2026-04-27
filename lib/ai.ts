@@ -14,7 +14,12 @@ export const onboardingSchema = z.object({
     })
   ),
   goal: z.string(),
-  examDates: z.array(z.string()),
+  examDates: z.array(
+    z.object({
+      title: z.string().min(2),
+      date: z.string().min(4)
+    })
+  ),
   studyPreferences: z.array(z.string())
 });
 
@@ -45,34 +50,61 @@ export async function generateFallbackPlan(payload: unknown) {
   }
 
   const topSubjects = parsed.data.subjects
+    .slice()
     .sort((a, b) => b.difficulty - a.difficulty)
     .slice(0, 3)
     .map((subject) => subject.name);
 
+  const weekdays = ["Segunda", "Terca", "Quarta", "Quinta", "Sexta", "Sabado"];
+  const availableStart = parsed.data.wakeTime || "07:00";
+
+  const weeklyPlan = weekdays.map((day, index) => {
+    const first = topSubjects[index % Math.max(topSubjects.length, 1)] ?? "Matematica";
+    const second = topSubjects[(index + 1) % Math.max(topSubjects.length, 1)] ?? "Redacao";
+
+    return {
+      day,
+      blocks: [
+        {
+          subject: first,
+          start: availableStart,
+          end: shiftTime(availableStart, 90),
+          technique: "Pomodoro + Active Recall",
+          objective: `Avancar em ${first} com conteudo novo e exercicios.`
+        },
+        {
+          subject: second,
+          start: shiftTime(availableStart, 120),
+          end: shiftTime(availableStart, 180),
+          technique: "Revisao espacada",
+          objective: `Revisar ${second} e registrar erros recorrentes.`
+        }
+      ]
+    };
+  });
+
   return {
-    summary: `Plano inicial gerado para ${parsed.data.goal} com foco em ${topSubjects.join(", ")}.`,
-    weeklyPlan: [
-      {
-        day: "Segunda",
-        blocks: [
-          {
-            subject: topSubjects[0] ?? "Matematica",
-            start: "07:00",
-            end: "08:30",
-            technique: "Pomodoro + Active Recall",
-            objective: "Aprender conteudo novo e registrar erros."
-          }
-        ]
-      }
-    ],
+    summary: `Plano inicial gerado para ${parsed.data.goal} com foco em ${topSubjects.join(", ")} e distribuicao realista ao longo da semana.`,
+    weeklyPlan,
     insights: [
-      "Concentre os blocos mais pesados nas primeiras horas do dia.",
-      "Inclua uma revisao curta 24h apos cada topico novo."
+      `Os blocos mais exigentes foram posicionados a partir de ${parsed.data.wakeTime}.`,
+      parsed.data.examDates.length
+        ? `Sua proxima data importante e ${parsed.data.examDates[0]?.title} em ${parsed.data.examDates[0]?.date}.`
+        : "Nenhuma data importante foi informada ainda.",
+      "As materias com maior dificuldade aparecem com mais frequencia na semana."
     ],
     recommendations: [
-      "Use simulados aos sabados para medir velocidade e aderencia.",
-      "Reforce revisoes leves nos dias de menor energia mental."
+      "Use revisao curta 24h depois de cada topico novo.",
+      "Reserve um bloco de correcao de erros antes do simulado da semana.",
+      "Se um dia falhar, redistribua primeiro os blocos de maior dificuldade."
     ]
   };
 }
 
+function shiftTime(time: string, minutesToAdd: number) {
+  const [hours, minutes] = time.split(":").map(Number);
+  const total = hours * 60 + minutes + minutesToAdd;
+  const nextHours = Math.floor(total / 60) % 24;
+  const nextMinutes = total % 60;
+  return `${String(nextHours).padStart(2, "0")}:${String(nextMinutes).padStart(2, "0")}`;
+}

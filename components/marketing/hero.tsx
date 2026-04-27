@@ -7,10 +7,10 @@ import { ArrowRight, BadgeCheck, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-const metrics = [
-  { label: "Planos ativos", value: "12.4k" },
-  { label: "Aderencia media", value: "86%" },
-  { label: "Horas poupadas", value: "9.1h/sem" }
+const highlights = [
+  { title: "Plano adaptativo", description: "A rotina muda e o cronograma acompanha." },
+  { title: "Tutor integrado", description: "Duvidas, revisoes e explicacoes no mesmo fluxo." },
+  { title: "Onboarding guiado", description: "Sem planilha improvisada nem campos soltos." }
 ];
 
 export function Hero() {
@@ -40,10 +40,10 @@ export function Hero() {
             </Button>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            {metrics.map((metric) => (
-              <div key={metric.label} className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
-                <p className="text-2xl font-semibold text-white">{metric.value}</p>
-                <p className="mt-1 text-sm text-slate-400">{metric.label}</p>
+            {highlights.map((item) => (
+              <div key={item.title} className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-lg font-semibold text-white">{item.title}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-400">{item.description}</p>
               </div>
             ))}
           </div>
@@ -73,7 +73,7 @@ export function Hero() {
                 <div className="rounded-xl border border-white/10 bg-background/80 p-5 backdrop-blur">
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-slate-300">Plano semanal</p>
-                    <span className="rounded-full bg-success/15 px-3 py-1 text-xs text-success">Em dia</span>
+                    <span className="rounded-full bg-success/15 px-3 py-1 text-xs text-success">Adaptativo</span>
                   </div>
                   <div className="mt-4 space-y-3">
                     {[
@@ -95,13 +95,13 @@ export function Hero() {
                   <div className="rounded-xl border border-white/10 bg-background/80 p-5 backdrop-blur">
                     <p className="text-sm text-slate-300">Insight da IA</p>
                     <p className="mt-3 text-lg font-medium text-white">
-                      Sua melhor janela cognitiva e das 6h30 as 8h30. Vamos proteger esse horario.
+                      Sua melhor janela cognitiva pode ser protegida no cronograma logo depois do onboarding.
                     </p>
                   </div>
                   <div className="rounded-xl border border-white/10 bg-background/80 p-5 backdrop-blur">
-                    <p className="text-sm text-slate-300">Disciplina</p>
-                    <p className="mt-3 text-4xl font-semibold text-white">92</p>
-                    <p className="mt-1 text-sm text-slate-400">Nivel Focus Architect</p>
+                    <p className="text-sm text-slate-300">Status do produto</p>
+                    <p className="mt-3 text-2xl font-semibold text-white">Pre-lancamento funcional</p>
+                    <p className="mt-1 text-sm text-slate-400">Sem estatisticas inventadas, com base pronta para producao.</p>
                   </div>
                 </div>
               </div>
@@ -112,4 +112,3 @@ export function Hero() {
     </section>
   );
 }
-

@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+import { verifySessionToken } from "@/lib/session";
+
 const protectedRoutes = ["/dashboard", "/flashcards", "/library", "/simulados", "/admin"];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isProtected = protectedRoutes.some((route) => path.startsWith(route));
 
@@ -11,9 +13,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const sessionToken = request.cookies.get("cognai-session");
+  const sessionToken = request.cookies.get("cognai-session")?.value;
+  const session = await verifySessionToken(sessionToken);
 
-  if (!sessionToken) {
+  if (!session) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -23,4 +26,3 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: ["/dashboard/:path*", "/flashcards/:path*", "/library/:path*", "/simulados/:path*", "/admin/:path*"]
 };
-

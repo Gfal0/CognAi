@@ -1,20 +1,15 @@
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
-import { InsightsPanel } from "@/components/dashboard/insights-panel";
-import { MetricsGrid } from "@/components/dashboard/metrics-grid";
-import { PlannerBoard } from "@/components/dashboard/planner-board";
+import { DashboardLive } from "@/components/dashboard/dashboard-live";
+import { LogoutButton } from "@/components/dashboard/logout-button";
 
 export default function DashboardPage() {
   return (
     <DashboardShell
       title="Seu cockpit de consistencia"
       description="Cronograma visual, progresso, provas, insights da IA e reorganizacao instantanea."
+      actions={<LogoutButton />}
     >
-      <div className="space-y-6">
-        <MetricsGrid />
-        <PlannerBoard />
-        <InsightsPanel />
-      </div>
+      <DashboardLive />
     </DashboardShell>
   );
 }
-

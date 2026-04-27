@@ -84,7 +84,7 @@ npm run prisma:deploy
 ## Observacoes de producao
 
 - `vercel.json` ja aponta o build para `npm run vercel-build`.
-- O script `vercel-build` executa `prisma generate`, tenta `prisma migrate deploy` quando `DATABASE_URL` existir, e depois roda `next build`.
+- O script `vercel-build` executa `prisma generate`, tenta `prisma db push` quando `DATABASE_URL` existir, e depois roda `next build`.
 - Se voce usar preview deployments com Prisma, o ideal e ter um banco separado para preview e outro para production.
 - Auth, Gemini, Stripe, email e analytics estao com a estrutura pronta, mas ainda precisam das credenciais reais para funcionar em producao.
 

@@ -12,7 +12,7 @@
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:deploy": "prisma migrate deploy",
+    "prisma:deploy": "prisma db push",
     "vercel-build": "node scripts/vercel-build.js",
     "seed": "node prisma/seed.js"
   },

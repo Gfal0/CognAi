@@ -8,9 +8,8 @@ export async function POST(request: Request) {
   const fallback = await generateFallbackPlan(body);
 
   return NextResponse.json({
-    provider: process.env.GEMINI_API_KEY ? "gemini-ready" : "fallback",
+    provider: "heuristic-planner",
     prompt: studyPlanPrompt,
     data: fallback
   });
 }
-

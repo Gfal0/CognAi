@@ -5,10 +5,12 @@ import { Sidebar } from "@/components/dashboard/sidebar";
 export function DashboardShell({
   title,
   description,
+  actions,
   children
 }: {
   title: string;
   description: string;
+  actions?: ReactNode;
   children: ReactNode;
 }) {
   return (
@@ -22,6 +24,7 @@ export function DashboardShell({
               <h1 className="mt-2 text-3xl font-semibold">{title}</h1>
               <p className="mt-2 text-slate-400">{description}</p>
             </div>
+            {actions ? <div>{actions}</div> : null}
           </div>
           {children}
         </div>
@@ -29,4 +32,3 @@ export function DashboardShell({
     </div>
   );
 }
-

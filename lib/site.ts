@@ -93,27 +93,6 @@ export const features = [
   }
 ];
 
-export const testimonials = [
-  {
-    name: "Marina A.",
-    role: "Vestibulanda",
-    quote:
-      "Eu parei de montar cronograma em planilha e começei a estudar de verdade. A CognAi me devolveu consistencia."
-  },
-  {
-    name: "Lucas P.",
-    role: "Concurseiro",
-    quote:
-      "Quando eu atrasava um dia inteiro, antes eu travava. Agora o plano se ajusta e sigo em frente."
-  },
-  {
-    name: "Ana Beatriz S.",
-    role: "Universitaria",
-    quote:
-      "O tutor e os resumos por PDF me economizam horas toda semana sem perder profundidade."
-  }
-];
-
 export const faqItems = [
   {
     question: "A CognAi serve so para vestibular?",
@@ -157,4 +136,3 @@ export const pricing = [
     features: ["Multiplos alunos", "Painel institucional", "Relatorios e suporte"]
   }
 ];
-
